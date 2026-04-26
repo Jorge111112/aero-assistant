@@ -158,10 +158,11 @@
 </div>
 
 <script>
+// Nueva key + modelo estable gemini-1.5-flash
 const GEMINI_KEY = "AIzaSyBJiUy-KOdmi0n7ja-uwGdDK9JkSI37eyg";
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`;
 
-const SYSTEM = `Eres AERO, un asistente IA con personalidad carismática y cercana al estilo latinoamericano. Hablas como un amigo real: entusiasta, directo, con humor. Usas expresiones como chamo, chévere, dale, brutal, oye, mira. Das respuestas CORTAS (máximo 3-4 oraciones) para que suenen bien al hablarlas. Responde SIEMPRE en español conversacional y breve.`;
+const SYSTEM = `Eres AERO, un asistente IA con personalidad carismática y cercana al estilo latinoamericano. Hablas como un amigo real: entusiasta, directo, con humor. Usas expresiones como chamo, chévere, dale, brutal, oye, mira. Das respuestas CORTAS (máximo 3-4 oraciones) para que suenen bien al hablarlas. Responde SIEMPRE en español conversacional y breve. Sin listas ni texto largo.`;
 
 const PHRASES = ["CALCULANDO...","PROCESANDO...","UN SEGUNDITO...","ACTIVANDO NEURONAS...","PENSANDO..."];
 
@@ -214,7 +215,8 @@ function speak(text) {
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "es-ES"; u.rate = 1.05; u.pitch = 1.0;
   const voices = window.speechSynthesis.getVoices();
-  const v = voices.find(v => v.lang.startsWith("es") && !v.name.includes("Google")) || voices.find(v => v.lang.startsWith("es"));
+  const v = voices.find(v => v.lang.startsWith("es") && !v.name.includes("Google"))
+          || voices.find(v => v.lang.startsWith("es"));
   if (v) u.voice = v;
   u.onstart = () => setStatus("speaking");
   u.onend = u.onerror = () => setStatus("idle");
@@ -230,7 +232,6 @@ async function callGemini(userText) {
     $("statusText").textContent = PHRASES[phraseIdx];
   }, 1500);
 
-  // Build conversation history for Gemini
   const contents = [
     { role: "user",  parts: [{ text: SYSTEM }] },
     { role: "model", parts: [{ text: "¡Entendido chamo! Soy AERO, listo para ayudarte. ¡Dale!" }] },
